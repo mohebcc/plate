@@ -2,7 +2,6 @@ name: Deploy Next.js static site to GitHub Pages
 
 on:
   push:
-    branches: ["main", "master"]
   workflow_dispatch:
 
 permissions:
@@ -39,6 +38,11 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
         run: npm run build
+
+      - name: Verify exported site files
+        run: |
+          test -f out/index.html
+          test -f out/404.html
 
       - name: Ensure Pages serves Next static assets
         run: touch out/.nojekyll

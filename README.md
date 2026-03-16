@@ -24,8 +24,9 @@ Plately is a restaurant growth platform combining local discovery, direct online
 If you saw GitHub Pages `404 File not found`, make sure:
 1. GitHub Pages source is set to **GitHub Actions** in repository settings.
 2. The workflow `.github/workflows/deploy-pages.yml` is present and successful (it uses `actions/configure-pages` to compute the correct base path).
-3. Your default branch is `main` or `master` (or update workflow trigger accordingly).
+3. Any push can trigger deploy (workflow has no branch restriction), or run it manually via **workflow_dispatch**.
 4. For project pages (`username/repo`), app base path is auto-derived during Actions builds.
+5. Build job must contain `out/index.html` and `out/404.html` (verified in workflow).
 
 ## Deployment notes
 - GitHub Pages supports static export only. Dynamic server features (auth callbacks, webhooks, server actions requiring runtime) should be deployed to Vercel or another Node-capable host.
@@ -37,3 +38,9 @@ If your pipeline fails with `npm ci` lockfile sync errors, use `npm install --no
 
 ## Architecture docs
 See `docs/architecture.md` for system design, RBAC, onboarding, and MVP roadmap.
+
+
+## If it still fails
+- Open the latest **Deploy Next.js static site to GitHub Pages** run and inspect the **Build static export** + **Verify exported site files** steps.
+- Confirm repository **Settings → Pages → Build and deployment → Source = GitHub Actions**.
+- If your app needs server features (API routes, auth callbacks, webhooks), deploy to Vercel instead of Pages.
