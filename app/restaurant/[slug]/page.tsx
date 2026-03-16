@@ -6,10 +6,6 @@ interface Props {
   params: { slug: string };
 }
 
-export function generateStaticParams() {
-  return restaurants.map((restaurant) => ({ slug: restaurant.slug }));
-}
-
 export default function RestaurantPage({ params }: Props) {
   const restaurant = restaurants.find((item) => item.slug === params.slug);
   if (!restaurant) {
