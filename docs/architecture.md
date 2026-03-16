@@ -35,7 +35,7 @@
 - `/cuisine/[slug]` cuisine SEO listing page
 - `/dashboard/restaurant` restaurant owner hub
 - `/dashboard/admin` internal admin hub
-- `/api/health` service health endpoint
+- `/health` static service health page (GitHub Pages compatible)
 
 ## 4) Component map (initial batch)
 - `components/landing/hero.tsx` hero section and core messaging
