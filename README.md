@@ -23,12 +23,13 @@ Plately is a restaurant growth platform combining local discovery, direct online
 ## GitHub Pages deployment fix (for 404)
 If you saw GitHub Pages `404 File not found`, make sure:
 1. GitHub Pages source is set to **GitHub Actions** in repository settings.
-2. The workflow `.github/workflows/deploy-pages.yml` is present and successful.
-3. Your default branch is `main` (or update workflow trigger accordingly).
+2. The workflow `.github/workflows/deploy-pages.yml` is present and successful (it now uses `actions/configure-pages` to compute the correct base path).
+3. Your default branch is `main` or `master` (or update workflow trigger accordingly).
 4. For project pages (`username/repo`), app base path is auto-derived from repo name during Actions builds.
 
 ## Deployment notes
 - GitHub Pages supports static export only. Dynamic server features (auth callbacks, webhooks, server actions requiring runtime) should be deployed to Vercel or another Node-capable host.
+- The deploy workflow writes `out/.nojekyll` so `_next/` assets are served correctly on Pages.
 
 
 ### CI note about `npm ci`
