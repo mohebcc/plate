@@ -1,6 +1,11 @@
 import { restaurants } from "@/lib/data";
 import { RestaurantCard } from "@/components/directory/restaurant-card";
 
+export function generateStaticParams() {
+  const uniqueCities = [...new Set(restaurants.map((restaurant) => restaurant.city.toLowerCase().replaceAll(" ", "-")))];
+  return uniqueCities.map((slug) => ({ slug }));
+}
+
 export default function CityPage({ params }: { params: { slug: string } }) {
   const cityName = params.slug.replaceAll("-", " ").toLowerCase();
   const filtered = restaurants.filter((r) => r.city.toLowerCase() === cityName);

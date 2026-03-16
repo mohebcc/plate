@@ -1,6 +1,12 @@
 import { restaurants } from "@/lib/data";
 import { RestaurantCard } from "@/components/directory/restaurant-card";
 
+export function generateStaticParams() {
+  const allCuisines = restaurants.flatMap((restaurant) => restaurant.cuisine);
+  const uniqueCuisines = [...new Set(allCuisines)];
+  return uniqueCuisines.map((slug) => ({ slug }));
+}
+
 export default function CuisinePage({ params }: { params: { slug: string } }) {
   const cuisine = params.slug.toLowerCase();
   const filtered = restaurants.filter((restaurant) => restaurant.cuisine.includes(cuisine as never));
