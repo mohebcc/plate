@@ -18,29 +18,33 @@ Plately is a restaurant growth platform combining local discovery, direct online
 
 ## Build / run
 - Local production build: `npm run build && npm run start`
-- Static export output: `out/` (configured for GitHub Pages compatibility)
+- Static export output: `out/` (configured for static hosting)
 
-## GitHub Pages deployment fix (for 404)
-If you saw GitHub Pages `404 File not found`, make sure:
-1. GitHub Pages source is set to **GitHub Actions** in repository settings.
-2. The workflow `.github/workflows/deploy-pages.yml` is present and successful (it uses `actions/configure-pages` to compute the correct base path).
-3. Any push can trigger deploy (workflow has no branch restriction), or run it manually via **workflow_dispatch**.
-4. For project pages (`username/repo`), app base path is auto-derived during Actions builds.
-5. Build job must contain `out/index.html` and `out/404.html` (verified in workflow).
+## Deployment (GitHub Pages via `gh-pages` branch)
+This repo deploys the static export using `.github/workflows/deploy-pages.yml` by publishing `out/` to the `gh-pages` branch.
+
+### Required repository setting
+In **Settings → Pages**:
+- Source: **Deploy from a branch**
+- Branch: **gh-pages**
+- Folder: **/ (root)**
+
+### What the workflow does
+1. Installs dependencies with `npm install --no-fund --no-audit`
+2. Runs `npm run build` (Next static export)
+3. Verifies `out/index.html` and `out/404.html`
+4. Writes `out/.nojekyll`
+5. Publishes `out/` to `gh-pages`
 
 ## Deployment notes
 - GitHub Pages supports static export only. Dynamic server features (auth callbacks, webhooks, server actions requiring runtime) should be deployed to Vercel or another Node-capable host.
-- App Router API route handlers are not supported in static export, so this Pages build uses a static `/health` page instead of `/api/health`.
-- The deploy workflow writes `out/.nojekyll` so `_next/` assets are served correctly on Pages.
+- App Router API route handlers are not supported in static export, so this Pages build uses a static `/health` page.
 
-### CI note about `npm ci`
-If your pipeline fails with `npm ci` lockfile sync errors, use `npm install --no-fund --no-audit` in the Pages build job until a fully regenerated lockfile is committed from a network-enabled environment.
+## If nothing happens
+- Confirm Actions are enabled for the repo and workflow ran on push to `main`/`master`.
+- Check that the `gh-pages` branch gets updated after workflow success.
+- Confirm Pages source is set to `gh-pages` branch root.
+- If the site is blank/old, hard refresh browser cache.
 
 ## Architecture docs
 See `docs/architecture.md` for system design, RBAC, onboarding, and MVP roadmap.
-
-
-## If it still fails
-- Open the latest **Deploy Next.js static site to GitHub Pages** run and inspect the **Build static export** + **Verify exported site files** steps.
-- Confirm repository **Settings → Pages → Build and deployment → Source = GitHub Actions**.
-- If your app needs server features (API routes, auth callbacks, webhooks), deploy to Vercel instead of Pages.
