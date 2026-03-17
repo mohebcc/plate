@@ -21,7 +21,7 @@ Plately is a restaurant growth platform combining local discovery, direct online
 - Static export output: `out/` (configured for static hosting)
 
 ## Deployment (GitHub Pages via Actions)
-This repo deploys using `.github/workflows/deploy-pages.yml` with the official Pages artifact flow.
+This repo deploys using `.github/workflows/static.yml` with the official Pages artifact flow.
 
 ### Required repository setting
 In **Settings → Pages**:
@@ -40,7 +40,7 @@ In **Settings → Pages**:
 - App Router API route handlers are not supported in static export, so this Pages build uses a static `/health` page.
 
 ## If still not active
-- In Actions, keep only this workflow active: **Deploy static content to Pages**.
+- In Actions, keep only this workflow active: **Deploy static content to Pages (static.yml)**.
 - Open the latest failed run and check which step failed (Install / Build / Upload / Deploy).
 - Ensure repository Pages source is **GitHub Actions** (not branch mode).
 - Re-run the workflow manually with **Run workflow** after changing Pages settings.
