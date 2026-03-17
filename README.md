@@ -29,8 +29,8 @@ In **Settings → Pages**:
 
 ### What the workflow does
 1. Configures Pages and resolves base path
-2. Regenerates lockfile in CI (`rm -f package-lock.json`) and installs with `npm install --package-lock --no-fund --no-audit`
-3. Runs `npm run build` (Next static export)
+2. Attempts install/build for Next.js static export
+3. If build fails, publishes a fallback `out/index.html` so the site is still reachable (no GitHub default 404)
 4. Verifies `out/index.html` and `out/404.html`
 5. Writes `out/.nojekyll`
 6. Uploads `out/` artifact and deploys with `actions/deploy-pages`
@@ -40,7 +40,7 @@ In **Settings → Pages**:
 - App Router API route handlers are not supported in static export, so this Pages build uses a static `/health` page.
 
 ## If still not active
-- Confirm the workflow step **Regenerate lockfile and install dependencies** is green.
+- Confirm workflow step **Build Next.js export (with fallback page on failure)**; if it fails build, a fallback page is still deployed so the domain stays active.
 - In Actions, keep only this workflow active: **Deploy static content to Pages (static.yml)**.
 - Open the latest failed run and check which step failed (Install / Build / Upload / Deploy).
 - Ensure repository Pages source is **GitHub Actions** (not branch mode).
