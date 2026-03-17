@@ -18,11 +18,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          fetch-depth: 0
+
+      - name: Diagnose environment
+        run: |
+          echo "branch=${GITHUB_REF_NAME}"
+          node -v || true
+          npm -v || true
 
       - name: Build static output (fallback if npm/build fails)
         shell: bash
@@ -60,7 +63,7 @@ jobs:
     <h1>Plately is deploying</h1>
     <div class="box">
       <p>A fallback page was published because the CI build failed in this run.</p>
-      <p>Open Actions logs for workflow <strong>Deploy static content (gh-pages)</strong> to inspect the build failure details.</p>
+      <p>Check Actions logs for workflow <strong>Deploy static content (gh-pages)</strong>.</p>
     </div>
   </body>
 </html>
@@ -73,11 +76,25 @@ HTML
           test -f out/index.html
           test -f out/404.html
           touch out/.nojekyll
+          ls -la out | sed -n '1,120p'
 
-      - name: Publish to gh-pages branch
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out
-          publish_branch: gh-pages
-          force_orphan: true
+      - name: Publish to gh-pages branch (direct git push)
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/gh-pages-publish
+          mkdir -p /tmp/gh-pages-publish
+          cp -R out/. /tmp/gh-pages-publish/
+
+          cd /tmp/gh-pages-publish
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b gh-pages
+          git add .
+          git commit -m "Deploy ${GITHUB_SHA}" || true
+
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push --force origin gh-pages
