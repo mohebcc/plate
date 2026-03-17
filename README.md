@@ -29,7 +29,7 @@ In **Settings → Pages**:
 
 ### What the workflow does
 1. Configures Pages and resolves base path
-2. Installs dependencies with `npm install --no-fund --no-audit`
+2. Regenerates lockfile in CI (`rm -f package-lock.json`) and installs with `npm install --package-lock --no-fund --no-audit`
 3. Runs `npm run build` (Next static export)
 4. Verifies `out/index.html` and `out/404.html`
 5. Writes `out/.nojekyll`
@@ -40,6 +40,7 @@ In **Settings → Pages**:
 - App Router API route handlers are not supported in static export, so this Pages build uses a static `/health` page.
 
 ## If still not active
+- Confirm the workflow step **Regenerate lockfile and install dependencies** is green.
 - In Actions, keep only this workflow active: **Deploy static content to Pages (static.yml)**.
 - Open the latest failed run and check which step failed (Install / Build / Upload / Deploy).
 - Ensure repository Pages source is **GitHub Actions** (not branch mode).
