@@ -20,31 +20,30 @@ Plately is a restaurant growth platform combining local discovery, direct online
 - Local production build: `npm run build && npm run start`
 - Static export output: `out/` (configured for static hosting)
 
-## Deployment (GitHub Pages via `gh-pages` branch)
-This repo deploys the static export using `.github/workflows/deploy-pages.yml` by publishing `out/` to the `gh-pages` branch.
+## Deployment (GitHub Pages via Actions)
+This repo deploys using `.github/workflows/deploy-pages.yml` with the official Pages artifact flow.
 
 ### Required repository setting
 In **Settings → Pages**:
-- Source: **Deploy from a branch**
-- Branch: **gh-pages**
-- Folder: **/ (root)**
+- Source: **GitHub Actions**
 
 ### What the workflow does
-1. Installs dependencies with `npm install --no-fund --no-audit`
-2. Runs `npm run build` (Next static export)
-3. Verifies `out/index.html` and `out/404.html`
-4. Writes `out/.nojekyll`
-5. Publishes `out/` to `gh-pages`
+1. Configures Pages and resolves base path
+2. Installs dependencies with `npm install --no-fund --no-audit`
+3. Runs `npm run build` (Next static export)
+4. Verifies `out/index.html` and `out/404.html`
+5. Writes `out/.nojekyll`
+6. Uploads `out/` artifact and deploys with `actions/deploy-pages`
 
 ## Deployment notes
 - GitHub Pages supports static export only. Dynamic server features (auth callbacks, webhooks, server actions requiring runtime) should be deployed to Vercel or another Node-capable host.
 - App Router API route handlers are not supported in static export, so this Pages build uses a static `/health` page.
 
-## If nothing happens
-- Confirm Actions are enabled for the repo and workflow ran on push to `main`/`master`.
-- Check that the `gh-pages` branch gets updated after workflow success.
-- Confirm Pages source is set to `gh-pages` branch root.
-- If the site is blank/old, hard refresh browser cache.
+## If still not active
+- In Actions, keep only this workflow active: **Deploy static content to Pages**.
+- Open the latest failed run and check which step failed (Install / Build / Upload / Deploy).
+- Ensure repository Pages source is **GitHub Actions** (not branch mode).
+- Re-run the workflow manually with **Run workflow** after changing Pages settings.
 
 ## Architecture docs
 See `docs/architecture.md` for system design, RBAC, onboarding, and MVP roadmap.
