@@ -20,29 +20,30 @@ Plately is a restaurant growth platform combining local discovery, direct online
 - Local production build: `npm run build && npm run start`
 - Static export output: `out/` (configured for static hosting)
 
-## Deployment (GitHub Pages)
-This repo deploys using `.github/workflows/static.yml`.
+## Deployment (GitHub Pages - stable mode)
+This repo deploys with `.github/workflows/static.yml` by publishing `out/` directly to the `gh-pages` branch.
 
-### Recommended Pages setting
-In **Settings → Pages** use one of these (both are supported by the workflow):
-1. **Source: GitHub Actions** (primary)
-2. **Deploy from a branch → gh-pages /(root)** (fallback)
+### Required repository setting
+In **Settings → Pages**:
+- Source: **Deploy from a branch**
+- Branch: **gh-pages**
+- Folder: **/ (root)**
 
-### What the workflow does
-1. Builds Next export (with fallback page if install/build fails)
-2. Uploads artifact for official Pages deploy
-3. Tries `actions/deploy-pages` (GitHub Actions source)
-4. Also publishes the same static output to `gh-pages` branch (branch-source fallback)
+### Workflow behavior
+1. Attempts Next.js build (`npm install` + `npm run build`)
+2. If build fails, generates a fallback `out/index.html` and `out/404.html`
+3. Publishes `out/` to `gh-pages`
+
+This guarantees your domain does not stay on GitHub’s default 404 page.
 
 ## Deployment notes
 - GitHub Pages supports static export only. Dynamic server features (auth callbacks, webhooks, server actions requiring runtime) should be deployed to Vercel or another Node-capable host.
 - App Router API route handlers are not supported in static export, so this Pages build uses a static `/health` page.
 
 ## If still not active
-- Open the latest workflow run and confirm `build` and `deploy_branch_source` are green.
-- `deploy_actions_source` is best-effort and can fail if repo Pages settings are locked/misconfigured; `deploy_branch_source` still publishes `gh-pages`.
-- If `deploy_actions_source` fails repeatedly, set Pages source to `gh-pages` branch and the site will still work.
-- Ensure only `.github/workflows/static.yml` is used for Pages deploys.
+- Confirm `gh-pages` branch updates after workflow success.
+- Confirm Pages source is branch mode (`gh-pages` / root).
+- Hard refresh browser cache after deploy.
 
 ## Architecture docs
 See `docs/architecture.md` for system design, RBAC, onboarding, and MVP roadmap.
